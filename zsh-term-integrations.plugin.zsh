@@ -3,6 +3,7 @@
 
 autoload -Uz add-zsh-hook
 
+# generic title reporting using ncurses
 if tput hs; then
   _tput_tsl=$(tput tsl)
   _tput_fsl=$(tput fsl)
@@ -14,6 +15,7 @@ if tput hs; then
   add-zsh-hook precmd _zsh_term_integration_title
 fi
 
+# https://codeberg.org/dnkl/foot/wiki#user-content-shell-integration
 case "$TERM" in
 foot|foot-*|foot+*)
   _zsh_term_integration_prompt_marker() {
@@ -32,3 +34,11 @@ foot|foot-*|foot+*)
   add-zsh-hook chpwd _zsh_term_integration_pwd_info
   ;;
 esac
+
+# https://sw.kovidgoyal.net/kitty/overview/#integration-with-shells
+if test -n "$KITTY_INSTALLATION_DIR"; then
+  export KITTY_SHELL_INTEGRATION="enabled"
+  autoload -Uz -- "$KITTY_INSTALLATION_DIR"/shell-integration/zsh/kitty-integration
+  kitty-integration
+  unfunction kitty-integration
+fi
